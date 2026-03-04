@@ -2,39 +2,41 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-        // Pickup candle
-        public void Pickup(PlayerInteraction player)
-    {
-        // If player is already holding a candle, do nothing
-        if (player.currentCandle != null)
-        {
-            return;
-        }
+    private Rigidbody rb;
+    private Collider col;
 
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
+    }
+
+    public void Pickup(PlayerInteraction player)
+    {
+        // Assign to current candle
         player.currentCandle = gameObject;
 
         // Fixes physics
-        player.currentCandle.GetComponent<Rigidbody>().isKinematic = true;
+        rb.isKinematic = true;
+        rb.useGravity = false;
+        col.enabled = false;
 
-        player.currentCandle.transform.position = player.candleParent.transform.position;
-        player.currentCandle.transform.rotation = player.candleParent.transform.rotation;
-
-        // Set parent to candleParent game object
-        player.currentCandle.transform.SetParent(player.candleParent);
-
-        Debug.Log("Interacted with " + gameObject.name);
-
+        // Parent
+        transform.SetParent(player.candleParent);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
     }
 
     public void Drop(PlayerInteraction player)
     {
-        // Detaches currently held candle from the player's hand
-        player.candleParent.DetachChildren();
+        // Unparent
+        transform.SetParent(null);
 
-        player.currentCandle.transform.eulerAngles = new Vector3(player.currentCandle.transform.position.x, player.currentCandle.transform.position.z, player.currentCandle.transform.position.y);
+        // Re-enable physics
+        rb.isKinematic = false;
+        rb.useGravity = true;
+        col.enabled = true;
 
-        // Fixes physics
-        player.currentCandle.GetComponent<Rigidbody>().isKinematic = false;
-        player.currentCandle.GetComponent<BoxCollider>().isTrigger = false;
+        player.currentCandle = null;
     }
 }

@@ -48,7 +48,6 @@ public class PlayerInteraction : MonoBehaviour
 
                 if(Keyboard.current.eKey.wasPressedThisFrame)
                 {
-
                     // Pickup candle
                     Interactable newCandle = hit.collider.GetComponent<Interactable>();
 
