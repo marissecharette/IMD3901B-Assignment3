@@ -8,9 +8,12 @@ public class PlayerInteraction : MonoBehaviour
     public float interactRange = 2f;
     public Camera playerCamera;
 
-    public GameObject currentCandle;
+    public GameObject currentItem;
     public Transform candleParent;
-    // Attack stuff
+    public Transform snowballParent;
+
+    public GameObject snowballPrefab;
+
     public float cooldown = 1.0f;
     
     // Audio stuff
@@ -29,14 +32,24 @@ public class PlayerInteraction : MonoBehaviour
         crosshairUIScript.SetInteract(false);
 
         // If the player presses E and is holding a candle, throw the candle
-        if (Keyboard.current.eKey.wasPressedThisFrame && currentCandle != null)
+        if (Keyboard.current.eKey.wasPressedThisFrame && currentItem != null)
         {
-            Interactable candle = currentCandle.GetComponent<Interactable>();
+
+            GameObject thrownItem = currentItem;
+
+            Interactable item = thrownItem.GetComponent<Interactable>();
 
             Vector3 throwDir = playerCamera.transform.forward;
-            candle.Throw(this, throwDir, 30f);
+            item.Throw(this, throwDir, 30f);
 
-            currentCandle = null;
+            currentItem = null;
+
+            // If the thrown item was a snowball, then start a respawn loop
+            if (thrownItem.CompareTag("Snowball"))
+            {
+                StartCoroutine(RespawnSnowball());
+            }
+
             return;
         }
        
@@ -53,16 +66,27 @@ public class PlayerInteraction : MonoBehaviour
                 if(Keyboard.current.eKey.wasPressedThisFrame)
                 {
                     // Pickup candle
-                    Interactable newCandle = hit.collider.GetComponent<Interactable>();
+                    Interactable newItem = hit.collider.GetComponent<Interactable>();
 
-                    if (newCandle != null) {
-                        newCandle.Pickup(this);
+                    if (newItem != null) {
+                        newItem.Pickup(this);
                         //ac.PlayOneShot(pickupSound);
                     }
 
                 }
                 return;
             }
+        }
+
+        // After a snowball is thrown, wait for 1s before spawning a new one in the player's hand
+        IEnumerator RespawnSnowball()
+        {
+            yield return new WaitForSeconds(cooldown);
+
+            GameObject newSnowball = Instantiate(snowballPrefab);
+
+            Interactable interactable = newSnowball.GetComponent<Interactable>();
+            interactable.Pickup(this);
         }
     }
 }

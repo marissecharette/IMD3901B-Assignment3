@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Boar : MonoBehaviour
 {
-    public float maxHealth = 100f;
+    public float maxHealth = 30f;
     public float currentHealth;
 
     private bool isDead = false;

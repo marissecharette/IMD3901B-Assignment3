@@ -14,7 +14,7 @@ public class Interactable : MonoBehaviour
     public void Pickup(PlayerInteraction player)
     {
         // Assign to current candle
-        player.currentCandle = gameObject;
+        player.currentItem = gameObject;
 
         // Fixes physics
         rb.isKinematic = true;
@@ -22,11 +22,14 @@ public class Interactable : MonoBehaviour
         col.enabled = false;
 
         // Parent to transform gameObject depending on what the interactable is
-
-
-        transform.SetParent(player.candleParent);
-
-
+        if (CompareTag("Snowball"))
+        {
+            transform.SetParent(player.snowballParent);
+        }
+        else
+        {
+            transform.SetParent(player.candleParent);
+        }
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
@@ -44,12 +47,12 @@ public class Interactable : MonoBehaviour
         // Add force to throw the weapon forward
         rb.AddForce(throwDirection * throwForce, ForceMode.VelocityChange);
 
-        player.currentCandle = null;
+        player.currentItem = null;
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        // Check if the object the candle is colliding with is the ice cube
+        // Check if the object the candle is colliding with is the ice cube, if yes then it takes a point of heat
         if (collision.gameObject.CompareTag("Ice"))
         {
             // Call ApplyHeat() on ice cube
@@ -59,8 +62,20 @@ public class Interactable : MonoBehaviour
                 // 1.0f so 4 candles have to hit the ice cube for it to despawn
                 ice.ApplyHeat(1.0f);
             }
-
             // Despawn candle
+            Destroy(gameObject);
+        }
+
+        // If the item hit the boar, then the boar takes 1 point of damage
+        if (collision.gameObject.CompareTag("Boar"))
+        {
+            // Call TakeDamage() on the boar
+            Boar boar = collision.gameObject.GetComponent<Boar>();
+            if (boar != null)
+            {
+                boar.TakeDamage(1);
+            }
+            // Despawn snowball
             Destroy(gameObject);
         }
     }
