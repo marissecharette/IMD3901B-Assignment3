@@ -27,7 +27,7 @@ public class Interactable : MonoBehaviour
         transform.localRotation = Quaternion.identity;
     }
 
-    public void Drop(PlayerInteraction player)
+    public void Throw(PlayerInteraction player, Vector3 throwDirection, float throwForce)
     {
         // Unparent
         transform.SetParent(null);
@@ -37,6 +37,27 @@ public class Interactable : MonoBehaviour
         rb.useGravity = true;
         col.enabled = true;
 
+        // Add force to throw the weapon forward
+        rb.AddForce(throwDirection * throwForce, ForceMode.VelocityChange);
+
         player.currentCandle = null;
     }
+
+    void OnCollisionEnter(Collision collision)
+{
+    // Check if the object the candle is colliding with is the ice cube
+    if (collision.gameObject.CompareTag("Ice"))
+    {
+        // Call ApplyHeat() on ice cube
+        Ice ice = collision.gameObject.GetComponent<Ice>();
+        if (ice != null)
+        {
+            // 1.0f so 4 candles have to hit the ice cube for it to despawn
+            ice.ApplyHeat(1.0f);
+        }
+
+        // Despawn candle
+        Destroy(gameObject);
+    }
+}
 }
