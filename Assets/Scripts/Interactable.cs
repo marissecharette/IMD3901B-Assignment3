@@ -5,7 +5,7 @@ public class Interactable : MonoBehaviour
     private Rigidbody rb;
     private Collider col;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
@@ -21,8 +21,17 @@ public class Interactable : MonoBehaviour
         rb.useGravity = false;
         col.enabled = false;
 
-        // Parent
-        transform.SetParent(player.candleParent);
+        // Parent to transform gameObject depending on what the interactable is
+
+        if (CompareTag("Snowball"))
+        {
+            transform.SetParent(player.snowballParent);
+        }
+        else
+        {
+            transform.SetParent(player.candleParent);
+        }
+
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
@@ -45,7 +54,7 @@ public class Interactable : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // Check if the object being collided with is the ice cube
+        // Check if the object the candle is colliding with is the ice cube
         if (collision.gameObject.CompareTag("Ice"))
         {
             // Call ApplyHeat() on ice cube
@@ -57,22 +66,6 @@ public class Interactable : MonoBehaviour
             }
 
             // Despawn candle
-            Destroy(gameObject);
-        }
-
-        // Check if the object being collided with is the boar
-        // Since all candles in the scene will be despawned to melt the ice,
-        // only snowballs will be hitting the boar so there shouldn't be a need to differentiate
-        else if (collision.gameObject.CompareTag("Boar"))
-        {
-            Boar boar = collision.gameObject.GetComponent<Boar>();
-            if (boar != null)
-            {
-                // Each snowball deals 10 damage
-                boar.TakeDamage(10);
-            }
-
-            // Despawn snowball
             Destroy(gameObject);
         }
     }

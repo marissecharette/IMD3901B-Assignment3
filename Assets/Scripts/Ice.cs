@@ -7,6 +7,9 @@ public class Ice : MonoBehaviour
     public float melted = 4f;
     public float currentMelted;
 
+    public GameObject snowballPrefab;
+    public PlayerInteraction player;
+
     // UI
     //public UI ui;
 
@@ -29,6 +32,11 @@ public class Ice : MonoBehaviour
 
     public void Melt()
     {
+        // Spawn snowball in player's hand
+        GameObject snowball = Instantiate(snowballPrefab);
+        Interactable interactable = snowball.GetComponent<Interactable>();
+        interactable.Pickup(player);
+        
         // Despawns
         Destroy(gameObject);
     }
