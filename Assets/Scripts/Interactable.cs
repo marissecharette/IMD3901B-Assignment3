@@ -23,14 +23,9 @@ public class Interactable : MonoBehaviour
 
         // Parent to transform gameObject depending on what the interactable is
 
-        if (CompareTag("Snowball"))
-        {
-            transform.SetParent(player.snowballParent);
-        }
-        else
-        {
-            transform.SetParent(player.candleParent);
-        }
+
+        transform.SetParent(player.candleParent);
+
 
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;

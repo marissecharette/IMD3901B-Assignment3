@@ -8,10 +8,8 @@ public class PlayerInteraction : MonoBehaviour
     public float interactRange = 2f;
     public Camera playerCamera;
 
-    public GameObject currentItem;
+    public GameObject currentCandle;
     public Transform candleParent;
-    public Transform snowballParent;
-
     // Attack stuff
     public float cooldown = 1.0f;
     
@@ -31,14 +29,14 @@ public class PlayerInteraction : MonoBehaviour
         crosshairUIScript.SetInteract(false);
 
         // If the player presses E and is holding a candle, throw the candle
-        if (Keyboard.current.eKey.wasPressedThisFrame && currentItem != null)
+        if (Keyboard.current.eKey.wasPressedThisFrame && currentCandle != null)
         {
-            Interactable candle = currentItem.GetComponent<Interactable>();
+            Interactable candle = currentCandle.GetComponent<Interactable>();
 
             Vector3 throwDir = playerCamera.transform.forward;
             candle.Throw(this, throwDir, 30f);
 
-            currentItem = null;
+            currentCandle = null;
             return;
         }
        
