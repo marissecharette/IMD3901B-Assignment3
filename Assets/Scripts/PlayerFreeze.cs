@@ -98,7 +98,7 @@ public class PlayerFreeze : MonoBehaviour
         hasSnowball = true;
 
         // Tell PlayerInteraction the player is now holding this object
-        playerInteraction.currentCandle = snowball;
+        playerInteraction.currentItem = snowball;
     }
 
     public void SnowballThrown()
