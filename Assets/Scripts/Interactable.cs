@@ -5,7 +5,7 @@ public class Interactable : MonoBehaviour
     private Rigidbody rb;
     private Collider col;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
@@ -21,8 +21,12 @@ public class Interactable : MonoBehaviour
         rb.useGravity = false;
         col.enabled = false;
 
-        // Parent
+        // Parent to transform gameObject depending on what the interactable is
+
+
         transform.SetParent(player.candleParent);
+
+
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
@@ -44,20 +48,20 @@ public class Interactable : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision)
-{
-    // Check if the object the candle is colliding with is the ice cube
-    if (collision.gameObject.CompareTag("Ice"))
     {
-        // Call ApplyHeat() on ice cube
-        Ice ice = collision.gameObject.GetComponent<Ice>();
-        if (ice != null)
+        // Check if the object the candle is colliding with is the ice cube
+        if (collision.gameObject.CompareTag("Ice"))
         {
-            // 1.0f so 4 candles have to hit the ice cube for it to despawn
-            ice.ApplyHeat(1.0f);
-        }
+            // Call ApplyHeat() on ice cube
+            Ice ice = collision.gameObject.GetComponent<Ice>();
+            if (ice != null)
+            {
+                // 1.0f so 4 candles have to hit the ice cube for it to despawn
+                ice.ApplyHeat(1.0f);
+            }
 
-        // Despawn candle
-        Destroy(gameObject);
+            // Despawn candle
+            Destroy(gameObject);
+        }
     }
-}
 }

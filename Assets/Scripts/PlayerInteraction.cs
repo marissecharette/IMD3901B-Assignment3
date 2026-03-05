@@ -10,7 +10,6 @@ public class PlayerInteraction : MonoBehaviour
 
     public GameObject currentCandle;
     public Transform candleParent;
-
     // Attack stuff
     public float cooldown = 1.0f;
     
