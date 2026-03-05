@@ -26,12 +26,17 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        // If the player presses E and is holding a candle, drop the candle
+        // Crosshair status resets
+        crosshairUIScript.SetInteract(false);
+
+        // If the player presses E and is holding a candle, throw the candle
         if (Keyboard.current.eKey.wasPressedThisFrame && currentCandle != null)
         {
             Interactable candle = currentCandle.GetComponent<Interactable>();
-            candle.Drop(this);
-            //ac.PlayOneShot(dropSound);
+
+            Vector3 throwDir = playerCamera.transform.forward;
+            candle.Throw(this, throwDir, 30f);
+
             currentCandle = null;
             return;
         }
