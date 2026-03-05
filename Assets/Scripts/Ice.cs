@@ -7,8 +7,6 @@ public class Ice : MonoBehaviour
     public float melted = 4f;
     public float currentMelted;
 
-    public Boar boar;
-
     // UI
     //public UI ui;
 
@@ -16,12 +14,6 @@ public class Ice : MonoBehaviour
     void Start()
     {
         currentMelted = melted;
-
-        // Disables the boar's collider and wandering movement
-        if (boar != null)
-        {
-            boar.SetActive(false);
-        }
     }
 
     public void ApplyHeat(float heat)
@@ -37,12 +29,6 @@ public class Ice : MonoBehaviour
 
     public void Melt()
     {
-        // Activate the boar
-        if (boar != null)
-        {
-            boar.SetActive(true);
-        }
-        
         // Despawns
         Destroy(gameObject);
     }

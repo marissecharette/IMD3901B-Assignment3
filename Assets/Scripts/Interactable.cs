@@ -44,20 +44,36 @@ public class Interactable : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision)
-{
-    // Check if the object the candle is colliding with is the ice cube
-    if (collision.gameObject.CompareTag("Ice"))
     {
-        // Call ApplyHeat() on ice cube
-        Ice ice = collision.gameObject.GetComponent<Ice>();
-        if (ice != null)
+        // Check if the object being collided with is the ice cube
+        if (collision.gameObject.CompareTag("Ice"))
         {
-            // 1.0f so 4 candles have to hit the ice cube for it to despawn
-            ice.ApplyHeat(1.0f);
+            // Call ApplyHeat() on ice cube
+            Ice ice = collision.gameObject.GetComponent<Ice>();
+            if (ice != null)
+            {
+                // 1.0f so 4 candles have to hit the ice cube for it to despawn
+                ice.ApplyHeat(1.0f);
+            }
+
+            // Despawn candle
+            Destroy(gameObject);
         }
 
-        // Despawn candle
-        Destroy(gameObject);
+        // Check if the object being collided with is the boar
+        // Since all candles in the scene will be despawned to melt the ice,
+        // only snowballs will be hitting the boar so there shouldn't be a need to differentiate
+        else if (collision.gameObject.CompareTag("Boar"))
+        {
+            Boar boar = collision.gameObject.GetComponent<Boar>();
+            if (boar != null)
+            {
+                // Each snowball deals 10 damage
+                boar.TakeDamage(10);
+            }
+
+            // Despawn snowball
+            Destroy(gameObject);
+        }
     }
-}
 }
