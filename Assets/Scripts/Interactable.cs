@@ -35,12 +35,12 @@ public class Interactable : NetworkBehaviour
         if (CompareTag("Snowball"))
         {
             follow.StartFollowing(player.snowballParent.transform);
-            follow.localOffset = new Vector3(1.5f, -1f, 0.5f);
+            follow.localOffset = new Vector3(0f, 0.2f, 0.5f);
         }
         else
         {
             follow.StartFollowing(player.candleParent.transform);
-            follow.localOffset = new Vector3(1.5f, -1f, 0.5f);
+            follow.localOffset = new Vector3(3f, -1f, 1f);
         }
     }
 
@@ -72,7 +72,7 @@ public class Interactable : NetworkBehaviour
             if (ice != null)
             {
                 // 1.0f so 4 candles have to hit the ice cube for it to despawn
-                ice.ApplyHeat(1);
+                ice.ApplyHeat(1f);
             }
             // Despawn candle
             Destroy(gameObject);

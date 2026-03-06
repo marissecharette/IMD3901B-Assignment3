@@ -4,9 +4,8 @@ using Unity.Netcode;
 
 public class Ice : NetworkBehaviour
 {
-    // Once hit 4 times, melted == 0 and the ice cube will despawn
-    public float melted = 4f;
-    private NetworkVariable<float> currentMelted = new NetworkVariable<float>();
+    // Once hit 4 times, currentMelted == 0 and the ice cube will despawn
+    private NetworkVariable<float> currentMelted = new NetworkVariable<float>(4f);
 
     public GameObject snowballPrefab;
     //public PlayerInteraction vrPlayer;
@@ -14,15 +13,6 @@ public class Ice : NetworkBehaviour
 
     // UI
     //public UI ui;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        if (IsServer)
-        {
-            currentMelted.Value = melted;
-        }
-    }
 
     public void ApplyHeat(float heat)
     {
