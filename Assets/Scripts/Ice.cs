@@ -8,8 +8,8 @@ public class Ice : MonoBehaviour
     public float currentMelted;
 
     public GameObject snowballPrefab;
-    public PlayerInteraction vrPlayer;
-    public PlayerInteraction desktopPlayer;
+    //public PlayerInteraction vrPlayer;
+    //public PlayerInteraction desktopPlayer;
 
     // UI
     //public UI ui;
@@ -33,16 +33,16 @@ public class Ice : MonoBehaviour
 
     public void Melt()
     {
-        // Spawn snowball in each player's hand
-    if (vrPlayer != null && vrPlayer.gameObject.activeInHierarchy)
-    {
-        vrPlayer.StartCoroutine(vrPlayer.RespawnSnowball());
-    }
+        // Find the players in the scene and for each one spawn a snowball in their right hand
+        PlayerInteraction[] players = FindObjectsOfType<PlayerInteraction>();
 
-    if (desktopPlayer != null && desktopPlayer.gameObject.activeInHierarchy)
-    {
-        desktopPlayer.StartCoroutine(desktopPlayer.RespawnSnowball());
-    }
+        foreach (PlayerInteraction player in players)
+        {
+            if (player != null)
+            {
+                player.StartCoroutine(player.RespawnSnowball());
+            }
+        }
         
         // Despawns
         Destroy(gameObject);

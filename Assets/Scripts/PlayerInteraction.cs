@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -99,7 +100,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void SpawnSnowballDesktop()
     {
-        GameObject newSnowball = Instantiate(snowballPrefab);
+        GameObject newSnowball = Instantiate(snowballPrefab, snowballParent.position, snowballParent.rotation);
+
         Interactable interactable = newSnowball.GetComponent<Interactable>();
         interactable.Pickup(this);
     }
@@ -107,8 +109,8 @@ public class PlayerInteraction : MonoBehaviour
     void SpawnSnowballVR()
     {
         // Spawn in front of right hand
-        Transform spawnPoint = vrRightHandSpawn;
-
-        Instantiate(snowballPrefab, spawnPoint.position, spawnPoint.rotation);
+        GameObject newSnowball = Instantiate(snowballPrefab, vrRightHandSpawn.position, vrRightHandSpawn.rotation);
+        NetworkObject netObj = newSnowball.GetComponent<NetworkObject>();
+        netObj.Spawn();
     }
 }
