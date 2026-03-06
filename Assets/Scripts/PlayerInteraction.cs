@@ -14,6 +14,9 @@ public class PlayerInteraction : MonoBehaviour
 
     public GameObject snowballPrefab;
 
+    public bool isVRPlayer = false;
+    public Transform vrRightHandSpawn;
+
     public float cooldown = 1.0f;
     
     // Audio stuff
@@ -77,16 +80,35 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
         }
+    }
 
-        // After a snowball is thrown, wait for 1s before spawning a new one in the player's hand
-        IEnumerator RespawnSnowball()
+    // After a snowball is thrown, wait for 1s before spawning a new one in the player's hand
+    public IEnumerator RespawnSnowball()
+    {
+        yield return new WaitForSeconds(cooldown);
+
+        if (isVRPlayer == true)
         {
-            yield return new WaitForSeconds(cooldown);
-
-            GameObject newSnowball = Instantiate(snowballPrefab);
-
-            Interactable interactable = newSnowball.GetComponent<Interactable>();
-            interactable.Pickup(this);
+            SpawnSnowballVR();
         }
+        else
+        {
+            SpawnSnowballDesktop();
+        }
+    }
+
+    void SpawnSnowballDesktop()
+    {
+        GameObject newSnowball = Instantiate(snowballPrefab);
+        Interactable interactable = newSnowball.GetComponent<Interactable>();
+        interactable.Pickup(this);
+    }
+
+    void SpawnSnowballVR()
+    {
+        // Spawn in front of right hand
+        Transform spawnPoint = vrRightHandSpawn;
+
+        Instantiate(snowballPrefab, spawnPoint.position, spawnPoint.rotation);
     }
 }
