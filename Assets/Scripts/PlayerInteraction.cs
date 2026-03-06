@@ -101,8 +101,6 @@ public class PlayerInteraction : MonoBehaviour
     void SpawnSnowballDesktop()
     {
         GameObject newSnowball = Instantiate(snowballPrefab, snowballParent.position, snowballParent.rotation);
-        NetworkObject netObj = newSnowball.GetComponent<NetworkObject>();
-        netObj.Spawn();
 
         Interactable interactable = newSnowball.GetComponent<Interactable>();
         interactable.Pickup(this);
