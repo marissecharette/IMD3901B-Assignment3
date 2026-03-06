@@ -100,7 +100,10 @@ public class PlayerInteraction : MonoBehaviour
 
     void SpawnSnowballDesktop()
     {
-        GameObject newSnowball = Instantiate(snowballPrefab);
+        GameObject newSnowball = Instantiate(snowballPrefab, snowballParent.position, snowballParent.rotation);
+        NetworkObject netObj = newSnowball.GetComponent<NetworkObject>();
+        netObj.Spawn();
+
         Interactable interactable = newSnowball.GetComponent<Interactable>();
         interactable.Pickup(this);
     }
@@ -108,8 +111,8 @@ public class PlayerInteraction : MonoBehaviour
     void SpawnSnowballVR()
     {
         // Spawn in front of right hand
-        Transform spawnPoint = vrRightHandSpawn;
-
-        Instantiate(snowballPrefab, spawnPoint.position, spawnPoint.rotation);
+        GameObject newSnowball = Instantiate(snowballPrefab, vrRightHandSpawn.position, vrRightHandSpawn.rotation);
+        NetworkObject netObj = newSnowball.GetComponent<NetworkObject>();
+        netObj.Spawn();
     }
 }
