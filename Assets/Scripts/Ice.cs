@@ -8,7 +8,8 @@ public class Ice : MonoBehaviour
     public float currentMelted;
 
     public GameObject snowballPrefab;
-    public PlayerInteraction player;
+    public PlayerInteraction vrPlayer;
+    public PlayerInteraction desktopPlayer;
 
     // UI
     //public UI ui;
@@ -32,10 +33,16 @@ public class Ice : MonoBehaviour
 
     public void Melt()
     {
-        // Spawn snowball in player's hand
-        GameObject snowball = Instantiate(snowballPrefab);
-        Interactable interactable = snowball.GetComponent<Interactable>();
-        interactable.Pickup(player);
+        // Spawn snowball in each player's hand
+    if (vrPlayer != null && vrPlayer.gameObject.activeInHierarchy)
+    {
+        vrPlayer.StartCoroutine(vrPlayer.RespawnSnowball());
+    }
+
+    if (desktopPlayer != null && desktopPlayer.gameObject.activeInHierarchy)
+    {
+        desktopPlayer.StartCoroutine(desktopPlayer.RespawnSnowball());
+    }
         
         // Despawns
         Destroy(gameObject);
