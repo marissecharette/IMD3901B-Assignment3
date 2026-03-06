@@ -1,9 +1,13 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class Interactable : MonoBehaviour
+public class Interactable : NetworkBehaviour
 {
     private Rigidbody rb;
     private Collider col;
+
+    public Transform candleParent;
+    public Transform snowballParent;
 
     void Awake()
     {
@@ -21,30 +25,38 @@ public class Interactable : MonoBehaviour
         rb.useGravity = false;
         col.enabled = false;
 
+        FollowParent follow = gameObject.GetComponent<FollowParent>();
+        if (follow == null)
+        {
+            follow = gameObject.AddComponent<FollowParent>();
+        }
+
         // Parent to transform gameObject depending on what the interactable is
         if (CompareTag("Snowball"))
         {
-            transform.SetParent(player.snowballParent);
+            follow.StartFollowing(player.snowballParent.transform);
+            follow.localOffset = new Vector3(1.5f, -1f, 0.5f);
         }
         else
         {
-            transform.SetParent(player.candleParent);
+            follow.StartFollowing(player.candleParent.transform);
+            follow.localOffset = new Vector3(1.5f, -1f, 0.5f);
         }
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
     }
 
     public void Throw(PlayerInteraction player, Vector3 throwDirection, float throwForce)
     {
-        // Unparent
-        transform.SetParent(null);
+        // Stop following the parent
+        FollowParent follow = GetComponent<FollowParent>();
+        if (follow != null)
+            follow.StopFollowing();
 
-        // Re-enable physics
+        // Enable physics
+        transform.position = transform.position; // optional, ensures no snapping
         rb.isKinematic = false;
         rb.useGravity = true;
         col.enabled = true;
 
-        // Add force to throw the weapon forward
         rb.AddForce(throwDirection * throwForce, ForceMode.VelocityChange);
 
         player.currentItem = null;
@@ -60,7 +72,7 @@ public class Interactable : MonoBehaviour
             if (ice != null)
             {
                 // 1.0f so 4 candles have to hit the ice cube for it to despawn
-                ice.ApplyHeat(1.0f);
+                ice.ApplyHeat(1);
             }
             // Despawn candle
             Destroy(gameObject);

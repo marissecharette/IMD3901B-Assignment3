@@ -3,13 +3,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
 
-public class PlayerInteraction : MonoBehaviour
+public class PlayerInteraction : NetworkBehaviour
 {
 
     public float interactRange = 2f;
     public Camera playerCamera;
 
     public GameObject currentItem;
+    
     public Transform candleParent;
     public Transform snowballParent;
 
@@ -34,6 +35,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         // Crosshair status resets
         crosshairUIScript.SetInteract(false);
+
+        if (!IsOwner) return;
 
         // If the player presses E and is holding a candle, throw the candle
         if (Keyboard.current.eKey.wasPressedThisFrame && currentItem != null)

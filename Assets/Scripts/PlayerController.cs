@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     public float speed = 5f;
     public float mouseSensitivity = 2f;
@@ -12,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public CharacterController controller;
     public Transform cameraTransform;
 
+    public Camera playerCamera;
+
     float xRotation = 0f;
     float yVelocity = 0f;
 
@@ -20,11 +23,22 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (!IsOwner)
+        {
+            // Disable the camera for the other player so they aren't sharing a camera
+            playerCamera.enabled = false;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         // Movement
         Vector2 moveInput = Keyboard.current != null ? new Vector2 
             (

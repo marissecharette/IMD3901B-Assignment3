@@ -1,11 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Ice : MonoBehaviour
+public class Ice : NetworkBehaviour
 {
     // Once hit 4 times, melted == 0 and the ice cube will despawn
     public float melted = 4f;
-    public float currentMelted;
+    private NetworkVariable<float> currentMelted = new NetworkVariable<float>();
 
     public GameObject snowballPrefab;
     //public PlayerInteraction vrPlayer;
@@ -17,25 +18,43 @@ public class Ice : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentMelted = melted;
+        if (IsServer)
+        {
+            currentMelted.Value = melted;
+        }
     }
 
     public void ApplyHeat(float heat)
     {
-        currentMelted -= heat;
-        Debug.Log("Ice took " + heat + " heat. Melt: " + currentMelted);
-
-        if (currentMelted <= 0)
+        if (IsServer)
         {
-            Melt();
+            currentMelted.Value -= heat;
+            Debug.Log("Ice took " + heat + " heat. Melt: " + currentMelted.Value);
+            
+            if (currentMelted.Value <= 0)
+            {
+                Melt();
+            }
         }
     }
 
     public void Melt()
     {
         // Find the players in the scene and for each one spawn a snowball in their right hand
-        PlayerInteraction[] players = FindObjectsOfType<PlayerInteraction>();
+        GiveSnowballsClientRpc();
 
+        // Despawn ice cube across all clients
+        NetworkObject networkObj = GetComponent<NetworkObject>();
+        if (networkObj != null && networkObj.IsSpawned)
+        {
+            networkObj.Despawn();
+        }
+    }
+
+    [ClientRpc]
+    void GiveSnowballsClientRpc()
+    {
+        PlayerInteraction[] players = FindObjectsOfType<PlayerInteraction>();
         foreach (PlayerInteraction player in players)
         {
             if (player != null)
@@ -43,8 +62,5 @@ public class Ice : MonoBehaviour
                 player.StartCoroutine(player.RespawnSnowball());
             }
         }
-        
-        // Despawns
-        Destroy(gameObject);
     }
 }
