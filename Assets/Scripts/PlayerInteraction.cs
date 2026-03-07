@@ -3,37 +3,36 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
 
-public class PlayerInteraction : MonoBehaviour
+public class PlayerInteraction : NetworkBehaviour
 {
 
     public float interactRange = 2f;
     public Camera playerCamera;
 
     public GameObject currentItem;
+    
     public Transform candleParent;
     public Transform snowballParent;
 
     public GameObject snowballPrefab;
 
+    public float cooldown = 1.0f;
+
     public bool isVRPlayer = false;
     public Transform vrRightHandSpawn;
 
-    public float cooldown = 1.0f;
-    
-    // Audio stuff
-
     // UI stuff
     public CrosshairUI crosshairUIScript;
-
-    void Start()
-    {
-        //ac = GetComponent<AudioSource>();
-    }
 
     void Update()
     {
         // Crosshair status resets
         crosshairUIScript.SetInteract(false);
+
+        if (!IsOwner)
+        {
+            return;
+        }
 
         // If the player presses E and is holding a candle, throw the candle
         if (Keyboard.current.eKey.wasPressedThisFrame && currentItem != null)
@@ -53,7 +52,6 @@ public class PlayerInteraction : MonoBehaviour
             {
                 StartCoroutine(RespawnSnowball());
             }
-
             return;
         }
        
@@ -88,6 +86,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         yield return new WaitForSeconds(cooldown);
 
+        // Spawn snowball differently depending on what player is being used (desktop or VR)
         if (isVRPlayer == true)
         {
             SpawnSnowballVR();
