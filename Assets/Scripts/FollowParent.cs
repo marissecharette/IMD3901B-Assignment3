@@ -14,13 +14,16 @@ public class FollowParent : NetworkBehaviour
 
     void Update()
     {
-        if (!isFollowing || parentTransform == null) return;
+        if (!isFollowing || parentTransform == null)
+        {
+            return;
+        }
 
-        // Compute new world position based on stored local offset
+        // New position based on local offset
         transform.position = parentTransform.TransformPoint(localPos + localOffset);
     }
 
-    // Call this when picking up
+    // This is called when the item is picked up, so it follows the parent's position
     public void StartFollowing(Transform parent)
     {
         parentTransform = parent;
@@ -28,7 +31,7 @@ public class FollowParent : NetworkBehaviour
         isFollowing = true;
     }
 
-    // Call this when throwing so the 
+    // Call this when throwing so the item stops following the parent
     public void StopFollowing()
     {
         isFollowing = false;

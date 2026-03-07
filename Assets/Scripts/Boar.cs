@@ -4,8 +4,10 @@ using Unity.Netcode;
 
 public class Boar : NetworkBehaviour
 {
+    // Initialize health of the boar
     public NetworkVariable<float> currentHealth = new NetworkVariable<float>(10);
 
+    // Boar takes 1 damage every time a snowball collides with it
     public void TakeDamage(float damage)
     {
         if (IsServer)
@@ -20,6 +22,7 @@ public class Boar : NetworkBehaviour
         }
     }
 
+    // Despawn boar
     public void Die()
     {
         NetworkObject networkObj = GetComponent<NetworkObject>();

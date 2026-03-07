@@ -16,10 +16,14 @@ public class UI : MonoBehaviour
     void Start()
     {
         if (ice != null)
-            totalIceHeat = ice.currentMelted.Value + 0; // start value
+        {
+            totalIceHeat = ice.currentMelted.Value + 0;
+        }
 
         if (boar != null)
+        {
             maxBoarHealth = boar.currentHealth.Value;
+        }
     }
 
     void Update()

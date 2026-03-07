@@ -11,9 +11,7 @@ public class Ice : NetworkBehaviour
     //public PlayerInteraction vrPlayer;
     //public PlayerInteraction desktopPlayer;
 
-    // UI
-    //public UI ui;
-
+    // Ice takes 1 heat every time a candle collides with it
     public void ApplyHeat(float heat)
     {
         if (IsServer)
@@ -27,7 +25,8 @@ public class Ice : NetworkBehaviour
             }
         }
     }
-
+    
+    // Ice melts
     public void Melt()
     {
         // Find the players in the scene and for each one spawn a snowball in their right hand
@@ -41,6 +40,7 @@ public class Ice : NetworkBehaviour
         }
     }
 
+    // Give snowballs
     [ClientRpc]
     void GiveSnowballsClientRpc()
     {

@@ -16,27 +16,23 @@ public class PlayerInteraction : NetworkBehaviour
 
     public GameObject snowballPrefab;
 
+    public float cooldown = 1.0f;
+
     public bool isVRPlayer = false;
     public Transform vrRightHandSpawn;
 
-    public float cooldown = 1.0f;
-    
-    // Audio stuff
-
     // UI stuff
     public CrosshairUI crosshairUIScript;
-
-    void Start()
-    {
-        //ac = GetComponent<AudioSource>();
-    }
 
     void Update()
     {
         // Crosshair status resets
         crosshairUIScript.SetInteract(false);
 
-        if (!IsOwner) return;
+        if (!IsOwner)
+        {
+            return;
+        }
 
         // If the player presses E and is holding a candle, throw the candle
         if (Keyboard.current.eKey.wasPressedThisFrame && currentItem != null)
@@ -56,7 +52,6 @@ public class PlayerInteraction : NetworkBehaviour
             {
                 StartCoroutine(RespawnSnowball());
             }
-
             return;
         }
        
@@ -91,6 +86,7 @@ public class PlayerInteraction : NetworkBehaviour
     {
         yield return new WaitForSeconds(cooldown);
 
+        // Spawn snowball differently depending on what player is being used (desktop or VR)
         if (isVRPlayer == true)
         {
             SpawnSnowballVR();

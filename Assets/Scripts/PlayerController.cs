@@ -7,6 +7,7 @@ public class PlayerController : NetworkBehaviour
     public float speed = 5f;
     public float mouseSensitivity = 2f;
 
+    // Gravity stuff
     public float gravity = -9.81f;
     public float groundedGravity = -2f;
 
@@ -26,7 +27,7 @@ public class PlayerController : NetworkBehaviour
 
         if (!IsOwner)
         {
-            // Disable the camera for the other player so they aren't sharing a camera
+            // Disable the camera for the other player so they aren't sharing a camera, I was having a weird bug with this earlier
             playerCamera.enabled = false;
         }
     }
@@ -48,11 +49,13 @@ public class PlayerController : NetworkBehaviour
         
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
 
-        // Gravity
+        // Gravity to keep the player grounded to slopes
         if (controller.isGrounded)
         {
             if (yVelocity < 0)
-                yVelocity = groundedGravity; // keeps player snapped to slopes
+            {
+                yVelocity = groundedGravity;
+            }
         }
         else
         {

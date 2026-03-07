@@ -49,7 +49,9 @@ public class Interactable : NetworkBehaviour
         // Stop following the parent
         FollowParent follow = GetComponent<FollowParent>();
         if (follow != null)
+        {
             follow.StopFollowing();
+        }
 
         // Enable physics
         transform.position = transform.position; // optional, ensures no snapping
