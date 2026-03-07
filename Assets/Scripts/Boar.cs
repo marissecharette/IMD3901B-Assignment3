@@ -1,36 +1,31 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Boar : MonoBehaviour
+public class Boar : NetworkBehaviour
 {
-    public float maxHealth = 30f;
-    public float currentHealth;
+    public NetworkVariable<float> currentHealth = new NetworkVariable<float>(10);
 
-    private bool isDead = false;
-
-    // UI
-    //public UI ui;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void TakeDamage(float damage)
     {
-        currentHealth = maxHealth;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        Debug.Log("Boar took " + damage + " damage. Health: " + currentHealth);
-
-        if (currentHealth <= 0)
+        if (IsServer)
         {
-            Die();
+            currentHealth.Value -= damage;
+            Debug.Log("Boar took " + damage + " damage. Health: " + currentHealth.Value);
+            
+            if (currentHealth.Value <= 0)
+            {
+                Die();
+            }
         }
     }
 
     public void Die()
     {
-        isDead = true;
-        Destroy(gameObject);
+        NetworkObject networkObj = GetComponent<NetworkObject>();
+        if (networkObj != null && networkObj.IsSpawned)
+        {
+            networkObj.Despawn();
+        }
     }
 }

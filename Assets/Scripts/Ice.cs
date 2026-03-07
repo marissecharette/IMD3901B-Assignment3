@@ -5,7 +5,7 @@ using Unity.Netcode;
 public class Ice : NetworkBehaviour
 {
     // Once hit 4 times, currentMelted == 0 and the ice cube will despawn
-    private NetworkVariable<float> currentMelted = new NetworkVariable<float>(4f);
+    public NetworkVariable<float> currentMelted = new NetworkVariable<float>(4f);
 
     public GameObject snowballPrefab;
     //public PlayerInteraction vrPlayer;

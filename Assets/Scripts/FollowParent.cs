@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class FollowParent : MonoBehaviour
+public class FollowParent : NetworkBehaviour
 {
     public Transform parentTransform;
 
